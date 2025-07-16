@@ -1,7 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-//ts-morph for oprning and scanning files lineby line
 import { Project, SyntaxKind} from 'ts-morph';
 
 // This method is called when your extension is activated
@@ -12,6 +11,30 @@ const debounceMap = new Map<string, NodeJS.Timeout>();
 export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(diagnosticCollection);
+
+  let auditActive = true;
+  const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+  statusBarItem.text = `$(check) Audit: On`;
+  statusBarItem.tooltip = 'Toggle Performance Audit';
+  statusBarItem.command = 'performance-analyser-v1-0-0.toggleAudit';
+  context.subscriptions.push(statusBarItem);
+  statusBarItem.show();
+
+  vscode.commands.executeCommand('performance-analyser-v1-0-0.runAudit');
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('performance-analyser-v1-0-0.toggleAudit', async () => {
+      auditActive = !auditActive;
+      if (auditActive) {
+        vscode.commands.executeCommand('performance-analyser-v1-0-0.runAudit');
+        statusBarItem.text = `$(check) Audit: On`;
+      } else {
+        vscode.commands.executeCommand('performance-analyser-v1-0-0.clearDiagnostics');
+        statusBarItem.text = `$(search) Audit: Off`;
+      }
+    })
+  );
+
 
   context.subscriptions.push(
     vscode.commands.registerCommand('performance-analyser-v1-0-0.runAudit', async () => {
@@ -72,7 +95,6 @@ export function deactivate() {
   diagnosticCollection.dispose();
 }
 
-//here we search all files 
 async function runFullAudit(): Promise<Map<vscode.Uri, vscode.Diagnostic[]>> {
   const diagnosticsMap = new Map<vscode.Uri, vscode.Diagnostic[]>();
 
@@ -102,7 +124,6 @@ async function runAuditOnDocument(doc: vscode.TextDocument): Promise<vscode.Diag
   if (doc.languageId === 'html') {
     return auditHtmlDocument(doc);
   } else if (doc.languageId === 'typescript') {
-	//if it is not rotintg no need to search lazy loading
     return isRelevantTsFile(doc) ? auditTsDocument(doc) : [];
   }
   return [];
@@ -249,7 +270,6 @@ async function auditTsDocument(doc: vscode.TextDocument): Promise<vscode.Diagnos
   return diagnostics;
 }
 
-//clear diagnostis function
 function applyDiagnostics(diagnosticsMap: Map<vscode.Uri, vscode.Diagnostic[]>) {
   for (const [uri, diagnostics] of diagnosticsMap.entries()) {
     if (diagnostics.length > 0) {
@@ -260,7 +280,6 @@ function applyDiagnostics(diagnosticsMap: Map<vscode.Uri, vscode.Diagnostic[]>) 
   }
 }
 
-//here this is for quickfix suggestions
 class PerformanceFixProvider implements vscode.CodeActionProvider {
   public provideCodeActions(document: vscode.TextDocument, range: vscode.Range): vscode.CodeAction[] | undefined {
     const diagnostics = diagnosticCollection.get(document.uri)?.filter(d => d.range.intersection(range));
@@ -271,7 +290,7 @@ class PerformanceFixProvider implements vscode.CodeActionProvider {
     const actions: vscode.CodeAction[] = [];
     for (const diagnostic of diagnostics) {
       const lineText = document.lineAt(diagnostic.range.start.line).text;
-//typescript liberaries to modiy vscode 
+
       if (diagnostic.message.includes('loading="lazy"')) {
         const fix = new vscode.CodeAction('Add loading="lazy"', vscode.CodeActionKind.QuickFix);
         fix.edit = new vscode.WorkspaceEdit();
