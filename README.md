@@ -143,8 +143,6 @@ The `package.json` contains useful scripts. Typical development workflow:
 * `check-types` — run `tsc --noEmit`
 * `compile-tests`, `watch-tests` — compile tests to `out` folder
 
-> See your `package.json` for exact script names and details.
-
 ---
 
 ## How it works (high level)
@@ -215,5 +213,6 @@ MIT © Ramsai Ummadisetty
 Author: Ramsai Ummadisetty — [ramsaiummadisetty@gmail.com](mailto:ramsaiummadisetty@gmail.com)
 
 ---
+
 
 
