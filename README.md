@@ -54,7 +54,7 @@ To try the extension locally for development:
 1. Clone the repo:
 
    ```bash
-   git clone https://github.com/ramsair/performance-analyser.git
+   git clone https://github.com/ramsair/performance-analyser/tree/develop
    cd performance-analyser
    ```
 2. Install dependencies:
@@ -201,7 +201,6 @@ Follow the official VS Code docs to publish: [https://code.visualstudio.com/api/
 ## Security & privacy
 
 * The extension only reads files from the workspace you open in the Extension Host. It does not upload source code anywhere.
-* If you plan to add telemetry, inform users and follow privacy/consent guidelines.
 
 ---
 
@@ -218,3 +217,4 @@ MIT © Ramsai Ummadisetty
 Author: Ramsai Ummadisetty — [ramsaiummadisetty@gmail.com](mailto:ramsaiummadisetty@gmail.com)
 
 ---
+
