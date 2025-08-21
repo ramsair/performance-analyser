@@ -77,8 +77,6 @@ The extension provides (or registers) the following commands. You can run them f
 | `performance-analyser-v1-0-0.clearDiagnostics` | Clear Diagnostics        |
 | `performance-analyser-v1-0-0.helloWorld`       | Hello World              |
 
-> Note: the extension code also registers runtime commands such as a **toggle audit** command (`performance-analyser-v1-0-0.toggleAudit`) and may provide other internal commands — if you want them to appear in `package.json` so VS Code shows them in the UI, add them to the `contributes.commands` array.
-
 ---
 
 ## Usage (user-facing)
@@ -113,7 +111,7 @@ The `package.json` contains useful scripts. Typical development workflow:
 2. Build / compile:
 
    ```bash
-   npm run compile
+   npm start
    ```
 
    * This runs type checks, lints, and bundles the extension code (via `esbuild.js` as configured in the project).
@@ -217,4 +215,5 @@ MIT © Ramsai Ummadisetty
 Author: Ramsai Ummadisetty — [ramsaiummadisetty@gmail.com](mailto:ramsaiummadisetty@gmail.com)
 
 ---
+
 
